@@ -716,6 +716,10 @@ try {
   throw
 } finally {
   if (Test-Path -LiteralPath $ScratchRoot) {
-    Remove-Item -LiteralPath $ScratchRoot -Recurse -Force
+    try {
+      Remove-Item -LiteralPath $ScratchRoot -Recurse -Force -ErrorAction Stop
+    } catch {
+      Write-Warning "temporary workspace cleanup was deferred: $($_.Exception.Message)"
+    }
   }
 }
