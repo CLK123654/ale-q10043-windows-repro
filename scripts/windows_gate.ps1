@@ -433,7 +433,7 @@ function Get-TraceInfo {
       $uri = [Uri]$url
       Assert-True ($uri.Host -eq '127.0.0.1' -and $uri.Port -eq 4173) "external request found in trace: $url"
     }
-    $browserMatch = [regex]::Match($networkText, 'HeadlessChrome/([0-9.]+)')
+    $browserMatch = [regex]::Match($networkText, '(?:HeadlessChrome|Chrome)/([0-9.]+)')
     return [ordered]@{
       bytes = (Get-Item -LiteralPath $PathValue).Length
       members = $members.Count
