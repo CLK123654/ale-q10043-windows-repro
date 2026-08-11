@@ -723,3 +723,7 @@ try {
     }
   }
 }
+
+if ($evidence.pass) {
+  exit 0
+}
