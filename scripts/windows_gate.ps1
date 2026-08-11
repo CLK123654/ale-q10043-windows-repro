@@ -269,15 +269,15 @@ function Assert-NoLinuxArtifacts {
     }
   }
   $lockPath = Join-Path $Root 'input_data/package-lock.json'
-  $lock = Get-Content -LiteralPath $lockPath -Raw | ConvertFrom-Json
-  foreach ($property in $lock.packages.PSObject.Properties) {
+  $lock = Get-Content -LiteralPath $lockPath -Raw | ConvertFrom-Json -AsHashtable
+  foreach ($property in $lock['packages'].GetEnumerator()) {
     $package = $property.Value
-    if ($null -eq $package.os) {
+    if (-not $package.ContainsKey('os')) {
       continue
     }
-    $systems = @($package.os | ForEach-Object { [string]$_ })
-    $optional = $package.optional -eq $true
-    Assert-True ($optional -or $systems.Contains('win32')) "required platform-specific dependency found: $($property.Name)"
+    $systems = @($package['os'] | ForEach-Object { [string]$_ })
+    $optional = $package.ContainsKey('optional') -and $package['optional'] -eq $true
+    Assert-True ($optional -or $systems.Contains('win32')) "required platform-specific dependency found: $($property.Key)"
   }
 }
 
@@ -643,7 +643,7 @@ try {
   foreach ($forbidden in @('学科', '难度', '任务名称', '任务概要', '预计工时', '经济价值', 'Windows验证过程', ('线上题目' + 'ID'))) {
     Assert-True (-not $specificationText.Contains($forbidden)) "forbidden specification field found: $forbidden"
   }
-  $evidence.workbook_sheets = [ordered]@{ answer = $answerSheets; specification = $specificationSheets; specification_columns = 2 }
+  $evidence.workbook_sheets = [ordered]@{ answer = @($answerSheets); specification = @($specificationSheets); specification_columns = 2 }
 
   $staticReview = Get-Content -LiteralPath (Join-Path $RepositoryRoot 'qa/static_text_gate.json') -Raw | ConvertFrom-Json
   $humanizer = Get-Content -LiteralPath (Join-Path $RepositoryRoot 'qa/humanizer_review.json') -Raw | ConvertFrom-Json
