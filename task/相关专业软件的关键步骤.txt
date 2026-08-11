@@ -1,0 +1,8 @@
+1. 在input_data目录执行npm ci，再用npx playwright install chromium准备与package-lock.json一致的测试环境。
+2. 修复output/playwright.config.mjs，设置tests目录、Chromium项目、本机webServer、单worker串行执行和当前任务的临时产物目录。
+3. 在测试中读取场景CSV、报价fixture和test_contract.json，将字段转换为布尔值、整数、时间与视口配置。
+4. 为每条case注册报价route，记录响应状态与请求查询参数；从deep_link打开页面后，根据payment_method选择支付方式。
+5. 使用getByRole、getByLabel和getByTestId定位控件，核对套餐、地区、优惠码、学生年龄、状态提示、总价、按钮可用性及最终报价参数。
+6. 使用page.clock固定浏览器时间，依次检查套餐、地区、支付方式和可用的继续按钮能否获得焦点，再保存完整页面截图和context trace。
+7. 按case_id写出case_results.csv、network_contract.csv和evidence_manifest.csv，汇总run_summary.json，并核对每个证据路径指向实际文件。
+8. 通过npm run test:e2e执行完整回归，检查退出码；再制造一次缺失fixture失败，确认本轮reports和evidence没有残留。

@@ -1,0 +1,24 @@
+{
+  "task_asset_id": "playwright_subscription_checkout_acceptance",
+  "software": "Playwright",
+  "runner": "windows-2025",
+  "node_major": 24,
+  "playwright_version": "1.62.1",
+  "entrypoint": "npm run test:e2e",
+  "attachments": {
+    "输入数据包.zip": "c93e86d14733631ca015b9d506dfda34de7bd11febd10880bd76b9b01166e438",
+    "reference.zip": "66f4b53f9e7a1fd4be09feb57c2c696dc2067b9c463c6160ebb2e8c55992aea2",
+    "关键标准答案.xlsx": "8b3986c72bf491947b646d395c9fb760a7d63409adfc572ec98ffc546f017515",
+    "任务规格转化.xlsx": "6b53df3b0172255fdab223481d1f8b90ac04dc3417b765e88e28dc6b7fccff39"
+  },
+  "answer_sheets": [
+    "交付物答案清单",
+    "固定字段答案",
+    "固定集合答案",
+    "固定数值答案",
+    "允许变体答案"
+  ],
+  "specification_sheets": [
+    "任务规格转化"
+  ]
+}

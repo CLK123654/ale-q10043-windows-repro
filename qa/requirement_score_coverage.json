@@ -1,0 +1,36 @@
+{
+  "task_asset_id": "playwright_subscription_checkout_acceptance",
+  "requirements": [
+    {
+      "requirement": "提交Playwright配置、测试、四份报表和逐场景证据",
+      "score_items": [1]
+    },
+    {
+      "requirement": "消费场景、报价fixture与浏览器策略并运行真实Chromium",
+      "score_items": [2]
+    },
+    {
+      "requirement": "使用稳定定位完成支付方式交互并核对最终报价参数",
+      "score_items": [3, 5]
+    },
+    {
+      "requirement": "核对套餐、席位、地区、优惠码、学生年龄、页面状态、总价和继续按钮",
+      "score_items": [3, 4, 6]
+    },
+    {
+      "requirement": "固定浏览器时间并检查可聚焦控件",
+      "score_items": [6]
+    },
+    {
+      "requirement": "每条场景保存trace与完整页面截图并写入证据清单",
+      "score_items": [7]
+    },
+    {
+      "requirement": "生成运行摘要，输入变化能重算结果，失败时清理本轮产物",
+      "score_items": [8]
+    }
+  ],
+  "unscored_public_requirements": [],
+  "score_items_without_public_requirement": [],
+  "pass": true
+}
