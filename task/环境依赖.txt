@@ -1,9 +1,5 @@
-Windows11、macOS13及主流64位Linux均可运行。Windows11直接使用Node.js24LTS、npm和Playwright1.62.1，不依赖WSL、容器、Bash或POSIX Shell。
+操作系统：Windows11、macOS或主流64位Linux。主软件为Playwright，使用输入锁文件兼容的Playwright与Chromium，Node.js24LTS负责测试入口；Windows11可在PowerShell中执行npm命令，不依赖WSL、容器或POSIX Shell。
 
-主软件是Playwright，浏览器项目只使用Chromium。package-lock.json固定npm依赖版本；执行npm ci后，通过npx playwright install chromium安装与Playwright匹配的浏览器。安装阶段可以联网，正式测试只访问127.0.0.1上的静态页面，所有报价请求由route拦截并从本地fixture返回。
+首次安装npm依赖和Chromium需要联网。正式回归只访问本机静态页面，报价请求由Playwright路由接管并读取本地fixture。执行账号需要读取input_data，并写入output中的报告、trace和截图。
 
-测试入口是npm run test:e2e，tools/run-task.mjs负责调用Playwright。输入材料保持只读，output目录必须可写。
-
-截图采用test_contract.json中的视口，浏览器时间由fixed_browser_time决定。trace压缩包和截图会占用磁盘空间，运行账号需要读取input_data并写入output的权限。
-
-建议准备双核CPU、4GB内存和2GB可写磁盘，Chromium不要求独立GPU。单次浏览器回归最长运行3分钟，超时后应检查本地服务、页面等待或下载监听。
+浏览器回归适合普通64位多核CPU和能够稳定运行一个Chromium上下文的内存，不要求独立GPU。磁盘应能容纳Node.js依赖、Chromium、输入材料和浏览器证据。测试应设置有限超时；超时后检查本地服务、页面等待、路由接管或下载监听。
