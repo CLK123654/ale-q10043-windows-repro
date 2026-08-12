@@ -6,10 +6,10 @@
   "playwright_version": "1.62.1",
   "entrypoint": "npm run test:e2e",
   "attachments": {
-    "输入数据包.zip": "c93e86d14733631ca015b9d506dfda34de7bd11febd10880bd76b9b01166e438",
-    "reference.zip": "66f4b53f9e7a1fd4be09feb57c2c696dc2067b9c463c6160ebb2e8c55992aea2",
-    "关键标准答案.xlsx": "8b3986c72bf491947b646d395c9fb760a7d63409adfc572ec98ffc546f017515",
-    "任务规格转化.xlsx": "6b53df3b0172255fdab223481d1f8b90ac04dc3417b765e88e28dc6b7fccff39"
+    "输入数据包.zip": "59484e474e9d4265afa15f47ae6354a75c7acd6b954217960a7b5df2dbc03290",
+    "reference.zip": "42c1f450dbb0c2ed18756050d46a17b92486fcb3186d19df509db8795706c24c",
+    "关键标准答案.xlsx": "84abaee721a9fcde68d6ba9b6860e5b2df3303c74bf75f3bb46ab08a9a59dcde",
+    "任务规格转化.xlsx": "a454fcc6252f34430e2c143be11533359126d7b6a2e68c557c00e2880fafa9f0"
   },
   "answer_sheets": [
     "交付物答案清单",

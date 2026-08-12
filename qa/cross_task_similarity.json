@@ -10,27 +10,27 @@
   "top_five": [
     {
       "qid": "empty",
-      "body_score": 0.0574,
+      "body_score": 0.0597,
       "title_score": 0.3774
     },
     {
       "qid": "10399",
-      "body_score": 0.0538,
+      "body_score": 0.0554,
       "title_score": 0.3704
     },
     {
       "qid": "13747",
-      "body_score": 0.0164,
+      "body_score": 0.017,
       "title_score": 0.3673
     },
     {
       "qid": "10422",
-      "body_score": 0.0464,
+      "body_score": 0.0477,
       "title_score": 0.3636
     },
     {
       "qid": "10436",
-      "body_score": 0.0627,
+      "body_score": 0.0646,
       "title_score": 0.3636
     }
   ],

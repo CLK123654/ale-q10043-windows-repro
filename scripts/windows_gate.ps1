@@ -216,8 +216,10 @@ function Assert-NaturalText {
   $boundary = "(?:$han$space[A-Za-z0-9]|[A-Za-z0-9]$space$han|[A-Za-z]$space[0-9]|[0-9]$space[A-Za-z])"
   $riskTerms = @('此外', '至关重要', '深入探讨', '彰显', '赋能', '无缝', '不断演变的格局', '不仅', '不只是', '值得注意的是', '专家认为', '行业报告显示', '观察者指出', '未来展望', '挑战与未来', '——')
   $processTerms = @(
-    '制题返修', '去AI', '修改题目', '规则调整', 'Windows复现', 'GitHub Actions',
-    '双干净目录', '动态变化', '负例', '附件哈希', '飞书回读',
+    '制题', '返修', '去AI', '修改题目', '规则调整', 'Windows复现', 'Windows验证', 'GitHub Actions', 'CI门禁',
+    '双干净目录', '动态变化', '动态改参', '负例', '附件哈希', '飞书回读',
+    'Reference', 'reference.zip', 'reference_members', 'validation', 'expected_', 'ground_truth', 'baseline_count',
+    '控制量', '不变量', '连续执行', '重复执行', '连续运行', '重复运行', '复跑', '失败清理', '失败关闭',
     ('record' + '_id'), ('file' + '_token')
   )
   foreach ($text in $Texts) {
@@ -676,7 +678,7 @@ try {
   $naturalTexts.Add((Get-Content -LiteralPath (Join-Path $scan.input_root 'README.md') -Raw))
   foreach ($row in Import-Csv -LiteralPath (Join-Path $scan.input_root 'cases/subscription_checkout_cases.csv')) {
     foreach ($property in $row.PSObject.Properties) {
-      if (-not [string]::IsNullOrEmpty([string]$property.Value)) { $naturalTexts.Add([string]$property.Value) }
+      if (-not [string]::IsNullOrEmpty([string]$property.Value) -and [regex]::IsMatch([string]$property.Value, '[㐀-鿿]')) { $naturalTexts.Add([string]$property.Value) }
     }
   }
   $fixture = Get-Content -LiteralPath (Join-Path $scan.input_root 'fixtures/quote_responses.json') -Raw | ConvertFrom-Json
@@ -687,6 +689,24 @@ try {
   $visible = [regex]::Replace($visible, '(?s)<[^>]+>', ' ')
   $visible = [System.Net.WebUtility]::HtmlDecode($visible)
   $naturalTexts.Add($visible)
+  $scriptText = Get-Content -LiteralPath (Join-Path $scan.input_root 'app/checkout.js') -Raw
+  foreach ($match in [regex]::Matches($scriptText, '["''`]([^"''`]*[㐀-鿿][^"''`]*)["''`]')) {
+    $naturalTexts.Add($match.Groups[1].Value)
+  }
+  $businessOutputRoot = $scan.expected_root
+  foreach ($file in Get-ChildItem -LiteralPath $businessOutputRoot -File -Recurse) {
+    $extension = $file.Extension.ToLowerInvariant()
+    if ($extension -in @('.csv', '.md', '.txt')) {
+      $naturalTexts.Add((Get-Content -LiteralPath $file.FullName -Raw))
+    } elseif ($extension -eq '.json') {
+      foreach ($text in Get-JsonStrings (Get-Content -LiteralPath $file.FullName -Raw | ConvertFrom-Json)) { $naturalTexts.Add($text) }
+    } elseif ($extension -in @('.mjs', '.js')) {
+      $businessScript = Get-Content -LiteralPath $file.FullName -Raw
+      foreach ($match in [regex]::Matches($businessScript, '["''`]([^"''`]*[㐀-鿿][^"''`]*)["''`]')) {
+        $naturalTexts.Add($match.Groups[1].Value)
+      }
+    }
+  }
   Assert-NaturalText @($naturalTexts) 'candidate-facing text'
   $evidence.natural_language = [ordered]@{
     humanizer_method = $humanizer.review_method
@@ -702,8 +722,8 @@ try {
   $second = Invoke-CleanRun '第二轮 中文 空格' 'clean-two'
   Assert-ReportSemantics $first.semantics $second.semantics 'two clean runs'
   $evidence.clean_runs = @($first, $second)
-  $evidence.mutation = Invoke-TimeMutation
-  $evidence.negative = Invoke-NegativeRun
+  $evidence.business_policy_change = Invoke-TimeMutation
+  $evidence.invalid_business_input = Invoke-NegativeRun
   $browserVersions = @($first.evidence_files.traces.Values | ForEach-Object { $_.browser_version } | Where-Object { $_ } | Sort-Object -Unique)
   Assert-True ($browserVersions.Count -eq 1) 'browser version was not captured consistently'
   $evidence.software_versions.chromium = $browserVersions[0]

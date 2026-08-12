@@ -2,6 +2,6 @@ Windows11、macOS13及主流64位Linux均可运行。Windows11直接使用Node.j
 
 主软件是Playwright，浏览器项目只使用Chromium。package-lock.json固定npm依赖版本；执行npm ci后，通过npx playwright install chromium安装与Playwright匹配的浏览器。安装阶段可以联网，正式测试只访问127.0.0.1上的静态页面，所有报价请求由route拦截并从本地fixture返回。
 
-测试入口是npm run test:e2e。tools/run-task.mjs负责调用Playwright，并在失败时清理本轮reports、evidence、test-results和临时运行目录。输入材料保持只读，output目录必须可写。
+测试入口是npm run test:e2e，tools/run-task.mjs负责调用Playwright。输入材料保持只读，output目录必须可写。
 
-截图采用test_contract.json中的视口，浏览器时间由fixed_browser_time决定。trace压缩包和截图会占用磁盘空间，运行账号需要创建、覆盖和清理output下文件的权限。
+截图采用test_contract.json中的视口，浏览器时间由fixed_browser_time决定。trace压缩包和截图会占用磁盘空间，运行账号需要读取input_data并写入output的权限。

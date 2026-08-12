@@ -1,8 +1,8 @@
 {
   "review_method": "humanizer-zh完整规则人工复核",
   "online_ai_detection_used_as_conclusion": false,
-  "reviewed_natural_language_sources": 366,
-  "score": 48,
+  "reviewed_natural_language_sources": 380,
+  "score": 47,
   "maximum_score": 50,
   "threshold": 45,
   "dimensions": {
@@ -10,13 +10,14 @@
     "rhythm": 9,
     "trust": 10,
     "authenticity": 9,
-    "refinement": 10
+    "refinement": 9
   },
   "review_notes": [
     "标题只说明结账页回归和证据留存，没有互联网前缀或复核口号",
-    "概要交代产品团队的实际故障、三类产物使用人和发布决策",
-    "Prompt围绕浏览器交互与报价拦截展开，没有写入固定控制数或标准答案",
-    "删除了没有真实执行的键盘审计和定位合同报表，焦点检查改为浏览器断言",
+    "概要交代产品团队的实际故障和三类材料使用人",
+    "Prompt围绕浏览器交互与报价拦截展开，没有写入逐场景结果或固定总数",
+    "评分表只描述业务字段和输入之间的关系，没有改参、连续执行或工程异常口吻",
+    "五页答案使用真实业务字段和交付路径，没有压缩包成员清单或通用答案模板",
     "任务规格只有模块与规格内容两列，没有学科、难度、质检状态或线上表字段",
     "题面、输入说明、业务数据和两份工作簿未发现模板化三段式、模糊归因、宣传措辞或混合边界空格"
   ],

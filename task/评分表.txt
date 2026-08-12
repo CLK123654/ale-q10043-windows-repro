@@ -1,95 +1,83 @@
 检查项一
-检查项内容：交付物与测试入口完整性
-标准答案或判定规则：output/playwright.config.mjs、output/tests/subscription_checkout.spec.mjs、四份规定报表及每条场景对应的trace与截图均存在。npm run test:e2e在Chromium中执行规定测试并返回0。附加的README或辅助测试可以保留，只要不替代规定文件，也不改变业务结果。
-关键字段或路径：output/playwright.config.mjs、output/tests/subscription_checkout.spec.mjs、output/reports/case_results.csv、output/reports/network_contract.csv、output/reports/evidence_manifest.csv、output/reports/run_summary.json、output/evidence/traces、output/evidence/screenshots
-容差及来源：文件路径逐字匹配任务Prompt；代码缩进、注释和内部函数名不计分。
-失败边界：任一核心文件缺失，test:e2e非零退出，没有启动真实Chromium，或报表与证据不是本次运行生成。
-可观察证据及定位方式：规定路径、npm退出码、Playwright运行日志、trace和截图修改时间
-客观硬性标准：六个规定文件齐全，每条case都有两类证据，Chromium实际执行，主流程退出码等于0。
-通过阈值：四项硬标准全部满足。
+检查项内容：Playwright项目与交付结构
+标准答案或判定规则：规定的配置、测试、报表、trace和截图均位于output下，test:e2e会启动Chromium并完成所有结账场景。
+关键字段或路径：output/playwright.config.mjs、output/tests/subscription_checkout.spec.mjs、output/reports、output/evidence
+容差及来源：路径按任务Prompt核对；代码可以拆分为辅助模块。
+未满足时：核心文件缺失，未启动Chromium，或没有完成全部场景。
+可观察证据及定位方式：规定路径、Playwright日志、trace和截图。
+客观硬性标准：交付结构完整，所有case_id都有浏览器执行记录。
+通过阈值：两项均满足。
 优先级：Gate项
 所属层级：L1任务指令遵循层
 
 检查项二
-检查项内容：输入驱动与Playwright运行方式
-标准答案或判定规则：测试读取subscription_checkout_cases.csv、quote_responses.json和test_contract.json，不在测试源码中另写一套场景答案。配置使用Chromium和本机webServer，测试从deep_link访问真实页面；浏览器时间、视口和报价route分别取自test_contract.json的fixed_browser_time、viewport和quote_route。
-关键字段或路径：output/playwright.config.mjs、output/tests/subscription_checkout.spec.mjs及三份输入文件
-容差及来源：CSV和JSON解析可以自行实现或使用随源码提交且可离线安装的依赖；模块与变量可以改名，但三类输入必须由运行代码实际消费。
-失败边界：用静态CSV复制代替浏览器运行、测试没有读取任一业务输入、页面未通过webServer加载、连接真实报价服务，或固定时间与视口写死在输入之外。
-可观察证据及定位方式：测试源码、Playwright项目日志、页面URL、route处理记录和run_summary.json
-客观硬性标准：三份输入均被消费，Chromium访问本机页面，浏览器时间与视口来自策略文件，报价由本地fixture提供。
-通过阈值：四项硬标准全部满足。
+检查项内容：业务输入与浏览器配置
+标准答案或判定规则：测试读取场景CSV、报价fixture和浏览器策略，从deep_link进入本地页面。浏览器时间、视口和报价route来自test_contract.json。
+关键字段或路径：cases/subscription_checkout_cases.csv、fixtures/quote_responses.json、policy/test_contract.json、output/playwright.config.mjs、output/tests/subscription_checkout.spec.mjs
+容差及来源：CSV和JSON解析可自行实现；三份输入必须由测试代码读取。
+未满足时：测试未读取某份业务输入，页面不是由webServer提供，或报价请求访问了真实服务。
+可观察证据及定位方式：测试源码、页面URL、route处理记录和run_summary.json。
+客观硬性标准：三份输入都被消费，Chromium只访问本地页面，报价响应由fixture提供。
+通过阈值：三项均满足。
 优先级：高权重项
 所属层级：L2软件或工具操作层
 
 检查项三
-检查项内容：稳定定位、页面交互与最终报价参数
-标准答案或判定规则：套餐使用test id定位，地区、优惠码和学生年龄使用label定位，支付方式与继续按钮使用role和可访问名称定位，状态提示和总价使用test id定位。源码不使用nth、元素位置、shell后代选择器或仅靠CSS id完成这些核心操作。支付方式与场景不同时必须触发页面交互，network_contract.csv中的最终plan、seats、region、coupon和payment与输入场景一致。
-关键字段或路径：output/tests/subscription_checkout.spec.mjs，output/reports/network_contract.csv中的final_plan、final_seats、final_region、final_coupon、final_payment
-容差及来源：允许使用功能等价的role、label、test id或语义定位；正则表达式和变量名可变，最终业务参数逐字段比较。
-失败边界：依赖nth或DOM位置、直接修改checked而不触发页面行为、未核对最终查询参数，或任一场景的最终报价参数错误。
-可观察证据及定位方式：测试源码、trace中的操作步骤和network_contract.csv
-客观硬性标准：七类核心目标使用稳定定位，支付方式通过页面交互改变，六条最终请求参数全部匹配输入。
-通过阈值：三部分全部满足。
+检查项内容：稳定定位与页面交互
+标准答案或判定规则：套餐、地区、优惠码、学生年龄、支付方式、状态提示、总价和继续按钮使用role、label或test id定位。支付方式需要时通过页面操作切换。
+关键字段或路径：output/tests/subscription_checkout.spec.mjs、output/reports/network_contract.csv
+容差及来源：允许功能等价的语义定位；查询参数按场景表逐字段比对。
+未满足时：核心操作依赖nth或元素位置，直接改写checked，或最终报价参数与场景不符。
+可观察证据及定位方式：测试源码、trace中的操作步骤和network_contract.csv。
+客观硬性标准：核心控件均由语义定位，最终请求参数与场景一致。
+通过阈值：两项均满足。
 优先级：高权重项
 所属层级：L8运行验证或可执行行为层
 
 检查项四
-检查项内容：六条结账场景结果
-标准答案或判定规则：case_results.csv按case_id包含六条唯一结果。P01为ready、继续按钮可用、total_cents为1600、banner_text为折扣已应用，今日应付$16.00；P02为needs_vat、按钮禁用、71400、需要填写VAT ID才能继续开票；P03为blocked_age、按钮禁用、0、学生优惠需年满18岁；P04为payment_unavailable、按钮禁用、1200、该地区暂不支持PayPal；P05为manual_review、按钮禁用、0、企业套餐需要销售审核；P06为ready、按钮可用、2500、报价已刷新，可以继续。
-关键字段或路径：output/reports/case_results.csv中的case_id、final_state、continue_enabled、total_cents、banner_text
-容差及来源：按case_id比较，行顺序不计分；状态、布尔值、分值和提示文本无容差，来源为场景CSV、fixture与页面实际状态。
-失败边界：缺少场景、case_id重复、页面值与输入预期不一致、禁用场景仍可继续，或报告只复制输入而没有浏览器断言。
-可观察证据及定位方式：case_results.csv、测试断言、trace和截图
-客观硬性标准：六个case_id唯一，六组状态、按钮、总价和提示全部正确，报告值来自页面读取结果。
-通过阈值：三项硬标准全部满足。
+检查项内容：结账场景与报价结果
+标准答案或判定规则：case_results.csv中的状态、按钮可用性、总价和页面提示与场景表一致，而且来自页面读取。network_contract.csv中的响应顺序与fixture一致，过期报价会经过页面重试后恢复。
+关键字段或路径：output/reports/case_results.csv、output/reports/network_contract.csv、subscription_checkout_cases.csv、quote_responses.json
+容差及来源：按case_id关联，行顺序不计分；状态、布尔值、分值和提示文本无容差。
+未满足时：缺少或重复case_id，报表与页面不一致，禁用场景仍可继续，或过期报价没有恢复。
+可观察证据及定位方式：两份报表、Playwright断言、trace和截图。
+客观硬性标准：每条场景的页面结果和报价过程都与输入相符。
+通过阈值：全部场景通过。
 优先级：高权重项
 所属层级：L6领域计算与专业规则层
 
 检查项五
-检查项内容：报价拦截、重试和网络合同
-标准答案或判定规则：network_contract.csv中P01、P03的request_count为1，P02、P04、P05、P06为2，总请求数为10。除P06外，first_status与final_status均为200，stale_retry_count为0；P06的first_status为409、final_status为200、stale_retry_count为1。所有served_from均为fixtures/quote_responses.json，request_pattern与test_contract.json一致。
-关键字段或路径：output/reports/network_contract.csv中的case_id、request_pattern、first_status、final_status、request_count、stale_retry_count、served_from
-容差及来源：按case_id比较，行顺序不计分；计数和状态码无容差，来源为场景CSV、fixture状态序列和实际route调用。
-失败边界：任何报价请求离开本机、状态序列与fixture不一致、支付方式交互未产生新请求、把输入变化误算为过期重试，或总请求数错误。
-可观察证据及定位方式：network_contract.csv、Playwright route记录和trace网络事件
-客观硬性标准：六条请求计数、六组状态、过期重试身份、served_from和route模式全部正确。
-通过阈值：全部固定集合与数值正确。
-优先级：高权重项
-所属层级：L5多源关联与字段一致性层
-
-检查项六
-检查项内容：浏览器时间与焦点检查
-标准答案或判定规则：case_results.csv中每条browser_time均为2026-07-30T09:30:00.000Z。每条场景都检查套餐、地区和支付方式能否获得焦点；P01与P06还要检查可用的继续按钮，故focus_check_count依次为4、3、3、3、3、4，总数为20。P03同时核对学生年龄输入值为16。
-关键字段或路径：output/tests/subscription_checkout.spec.mjs，output/reports/case_results.csv中的browser_time与focus_check_count
-容差及来源：时间按UTC精确到毫秒，焦点次数为整数且无容差；来源为test_contract.json和页面实际焦点状态。
-失败边界：只在配置文本中声明时间而不检查页面时钟、用固定报表值代替浏览器读取、禁用按钮被强行计为可聚焦，或学生年龄未核对。
-可观察证据及定位方式：page.clock调用、页面内Date结果、toBeFocused断言、case_results.csv和trace
-客观硬性标准：六条浏览器时间正确，六条焦点计数正确，总数为20，学生年龄断言通过。
-通过阈值：四项硬标准全部满足。
+检查项内容：浏览器时间与键盘焦点
+标准答案或判定规则：页面内的Date结果与test_contract.json规定的时间一致。套餐、地区和支付方式可以获得焦点，可用的继续按钮也可通过键盘访问。
+关键字段或路径：output/tests/subscription_checkout.spec.mjs、output/reports/case_results.csv
+容差及来源：时间按UTC精确到毫秒；焦点结果由浏览器断言得出。
+未满足时：页面时间随系统变化，报表时间与页面不符，或规定控件无法获得焦点。
+可观察证据及定位方式：page.clock调用、页面Date结果、toBeFocused断言、case_results.csv和trace。
+客观硬性标准：每条场景的时间和焦点检查都与输入政策、页面状态一致。
+通过阈值：全部场景通过。
 优先级：普通项
 所属层级：L8运行验证或可执行行为层
 
-检查项七
-检查项内容：证据文件与清单对应
-标准答案或判定规则：六个case_id各有一份可由Playwright trace查看器打开的ZIP和一张有效PNG，文件名与case_id一致。evidence_manifest.csv有六条唯一记录，trace_file、screenshot_file、trace_label和screenshot_assertion分别指向实际文件、最终状态和页面提示；case_results.csv中的两个证据路径与清单一致。
+检查项六
+检查项内容：证据清单与实际文件
+标准答案或判定规则：每个case_id都有可由Playwright trace查看器打开的ZIP和一张有效PNG。evidence_manifest.csv的路径指向实际文件，场景状态与页面提示与case_results.csv一致。
 关键字段或路径：output/evidence/traces、output/evidence/screenshots、output/reports/evidence_manifest.csv、output/reports/case_results.csv
-容差及来源：证据二进制哈希不固定；PNG需要有有效签名和非零尺寸，trace需要包含Playwright跟踪数据并可打开，路径从output开始。
-失败边界：空文件、损坏压缩包、截图与case错配、清单路径不存在、状态或提示与场景结果不一致，或报告使用本机绝对路径。
-可观察证据及定位方式：ZIP成员、PNG文件头与尺寸、evidence_manifest.csv和case_results.csv连接结果
-客观硬性标准：六份trace、六张截图、六条清单记录均有效且按case_id一一对应。
-通过阈值：四类对应关系全部满足。
+容差及来源：证据二进制可因浏览器版本和字体不同而变化；文件必须可打开。
+未满足时：文件为空或损坏，截图与case错配，清单路径不存在，或使用了本机绝对路径。
+可观察证据及定位方式：ZIP内容、PNG尺寸、evidence_manifest.csv与case_results.csv。
+客观硬性标准：每个case_id的跟踪、截图、清单和结果相互对应。
+通过阈值：全部场景的对应关系成立。
 优先级：高权重项
 所属层级：L9跨产物一致性与可追溯层
 
-检查项八
-检查项内容：运行摘要、输入变化与失败清理
-标准答案或判定规则：run_summary.json的result为PASS，case_count为6、enabled_case_count为2、disabled_case_count为4、total_intercepts为10、trace_zip_count为6、screenshot_count为6、focus_check_count为20，case_outcomes与case_results.csv一致。把test_contract.json中的fixed_browser_time改为2026-07-30T10:00:00Z后重新运行，六条browser_time变为2026-07-30T10:00:00.000Z，其余场景结果保持不变。缺少quote_responses.json时test:e2e非零退出，reports与evidence不留本轮文件。
-关键字段或路径：output/reports/run_summary.json、output/reports/case_results.csv、policy/test_contract.json、tools/run-task.mjs
-容差及来源：整数与时间无容差；JSON键顺序不计分，按结构化语义比较。
-失败边界：摘要与报表不一致、策略时间变化后输出不变、用预生成报表绕过浏览器，缺文件仍返回成功，或失败后残留旧证据。
-可观察证据及定位方式：run_summary.json、变更前后case_results.csv、npm退出码及两个输出目录
-客观硬性标准：七个控制数与case_outcomes正确，时间变化能重算输出，缺fixture失败且无残留。
-通过阈值：三部分全部满足。
+检查项七
+检查项内容：发布回归摘要
+标准答案或判定规则：run_summary.json记录浏览器时间、各case_id的最终状态、报表路径和证据索引，其中的场景结果与三份CSV一致。
+关键字段或路径：output/reports/run_summary.json、output/reports/case_results.csv、output/reports/network_contract.csv、output/reports/evidence_manifest.csv
+容差及来源：JSON键顺序不计分；数组可按case_id排序。
+未满足时：摘要缺少场景，状态与页面结果不一致，或报表及证据路径无法定位。
+可观察证据及定位方式：run_summary.json、三份CSV和evidence目录。
+客观硬性标准：摘要可以把各场景追溯到对应报表和证据。
+通过阈值：全部场景都能追溯。
 优先级：普通项
-所属层级：L10抗投机或反作弊层
+所属层级：L9跨产物一致性与可追溯层

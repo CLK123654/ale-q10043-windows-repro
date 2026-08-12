@@ -1,0 +1,6 @@
+{
+  "result": "PENDING_LARK_REALTIME_REVIEW",
+  "status": "pending_coordinator_read",
+  "lark_mcp_read_in_this_worker": false,
+  "note": "本工作单元未读取实时质量反馈，等待主协调者复核"
+}
