@@ -397,6 +397,7 @@ function Get-SummaryWithoutTime {
   param([string]$JsonPath)
   $value = Get-Content -LiteralPath $JsonPath -Raw | ConvertFrom-Json
   $value.PSObject.Properties.Remove('fixed_browser_time')
+  $value.PSObject.Properties.Remove('browser_time_policy')
   return ($value | ConvertTo-Json -Compress -Depth 50)
 }
 
