@@ -652,6 +652,7 @@ try {
   $humanizer = Get-Content -LiteralPath (Join-Path $RepositoryRoot 'qa/humanizer_review.json') -Raw | ConvertFrom-Json
   $coverage = Get-Content -LiteralPath (Join-Path $RepositoryRoot 'qa/requirement_score_coverage.json') -Raw | ConvertFrom-Json
   $similarity = Get-Content -LiteralPath (Join-Path $RepositoryRoot 'qa/cross_task_similarity.json') -Raw | ConvertFrom-Json
+  $scoreLeak = Get-Content -LiteralPath (Join-Path $RepositoryRoot 'qa/score_answer_leak_gate.json') -Raw | ConvertFrom-Json
   Assert-True ($staticReview.pass -eq $true -and $staticReview.violations.Count -eq 0 -and $staticReview.humanizer_risk_hits.Count -eq 0) 'static language review failed'
   Assert-True ($humanizer.pass -eq $true -and $humanizer.score -ge 45 -and $humanizer.online_ai_detection_used_as_conclusion -eq $false) 'humanizer review failed'
   $dimensionNames = @($humanizer.dimensions.PSObject.Properties.Name | Sort-Object)
@@ -660,6 +661,7 @@ try {
   Assert-True ($dimensionTotal -eq $humanizer.score) 'humanizer score does not match five dimensions'
   Assert-True ($coverage.pass -eq $true -and $coverage.unscored_public_requirements.Count -eq 0 -and $coverage.score_items_without_public_requirement.Count -eq 0) 'requirement coverage failed'
   Assert-True ($similarity.pass -eq $true -and $similarity.comparison_count -eq 217 -and $similarity.threshold_hits.Count -eq 0) 'cross-task similarity gate failed'
+  Assert-True ($scoreLeak.pass -eq $true -and $scoreLeak.hits.Count -eq 0) 'candidate score answer leak gate failed'
 
   Assert-NoPublicMetadata
   $scan = Expand-TaskWorkspace '文本与兼容扫描 中文 空格'
