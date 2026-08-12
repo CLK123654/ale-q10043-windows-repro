@@ -1,5 +1,8 @@
+总分100分
+
 检查项一
 检查项内容：Playwright项目与交付结构
+分值：15分
 标准答案或判定规则：规定的配置、测试、报表、trace和截图均位于output下，test:e2e会启动Chromium并完成所有结账场景。
 关键字段或路径：output/playwright.config.mjs、output/tests/subscription_checkout.spec.mjs、output/reports、output/evidence
 容差及来源：路径按任务Prompt核对；代码可以拆分为辅助模块。
@@ -12,6 +15,7 @@
 
 检查项二
 检查项内容：业务输入与浏览器配置
+分值：14分
 标准答案或判定规则：测试读取场景CSV、报价fixture和浏览器策略，从deep_link进入本地页面。浏览器时间、视口和报价route来自test_contract.json。
 关键字段或路径：cases/subscription_checkout_cases.csv、fixtures/quote_responses.json、policy/test_contract.json、output/playwright.config.mjs、output/tests/subscription_checkout.spec.mjs
 容差及来源：CSV和JSON解析可自行实现；三份输入必须由测试代码读取。
@@ -24,6 +28,7 @@
 
 检查项三
 检查项内容：稳定定位与页面交互
+分值：14分
 标准答案或判定规则：套餐、地区、优惠码、学生年龄、支付方式、状态提示、总价和继续按钮使用role、label或test id定位。支付方式需要时通过页面操作切换。
 关键字段或路径：output/tests/subscription_checkout.spec.mjs、output/reports/network_contract.csv
 容差及来源：允许功能等价的语义定位；查询参数按场景表逐字段比对。
@@ -36,6 +41,7 @@
 
 检查项四
 检查项内容：结账场景与报价结果
+分值：20分
 标准答案或判定规则：case_results.csv中的状态、按钮可用性、总价和页面提示与场景表一致，而且来自页面读取。network_contract.csv中的响应顺序与fixture一致，过期报价会经过页面重试后恢复。
 关键字段或路径：output/reports/case_results.csv、output/reports/network_contract.csv、subscription_checkout_cases.csv、quote_responses.json
 容差及来源：按case_id关联，行顺序不计分；状态、布尔值、分值和提示文本无容差。
@@ -48,6 +54,7 @@
 
 检查项五
 检查项内容：浏览器时间与键盘焦点
+分值：10分
 标准答案或判定规则：页面内的Date结果与test_contract.json规定的时间一致。套餐、地区和支付方式可以获得焦点，可用的继续按钮也可通过键盘访问。
 关键字段或路径：output/tests/subscription_checkout.spec.mjs、output/reports/case_results.csv
 容差及来源：时间按UTC精确到毫秒；焦点结果由浏览器断言得出。
@@ -60,6 +67,7 @@
 
 检查项六
 检查项内容：证据清单与实际文件
+分值：17分
 标准答案或判定规则：每个case_id都有可由Playwright trace查看器打开的ZIP和一张有效PNG。evidence_manifest.csv的路径指向实际文件，场景状态与页面提示与case_results.csv一致。
 关键字段或路径：output/evidence/traces、output/evidence/screenshots、output/reports/evidence_manifest.csv、output/reports/case_results.csv
 容差及来源：证据二进制可因浏览器版本和字体不同而变化；文件必须可打开。
@@ -72,6 +80,7 @@
 
 检查项七
 检查项内容：发布回归摘要
+分值：10分
 标准答案或判定规则：run_summary.json记录浏览器时间、各case_id的最终状态、报表路径和证据索引，其中的场景结果与三份CSV一致。
 关键字段或路径：output/reports/run_summary.json、output/reports/case_results.csv、output/reports/network_contract.csv、output/reports/evidence_manifest.csv
 容差及来源：JSON键顺序不计分；数组可按case_id排序。
